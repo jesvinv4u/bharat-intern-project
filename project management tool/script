@@ -1,0 +1,96 @@
+document.getElementById('issueInputForm').addEventListener('submit', saveIssue);
+
+function fetchIssues(filter) {
+    var issues = JSON.parse(localStorage.getItem('issues')) || [];
+    var filteredIssues = [];
+
+    if (filter === 'all') {
+        filteredIssues = issues;
+    } else if (filter === 'pending') {
+        filteredIssues = issues.filter(issue => issue.status === 'Pending');
+    } else if (filter === 'completed') {
+        filteredIssues = issues.filter(issue => issue.status === 'Task Completed');
+    }
+
+    var issuesList = document.getElementById('issuesList');
+    issuesList.innerHTML = '';
+
+    for (var i = 0; i < filteredIssues.length; i++) {
+        var id = filteredIssues[i].id;
+        var desc = filteredIssues[i].description;
+        var severity = filteredIssues[i].severity;
+        var assignedTo = filteredIssues[i].assignedTo;
+        var status = filteredIssues[i].status;
+
+        issuesList.innerHTML += '<div class="well">' +
+            '<div class="labid"> <p><span class="label label-info">' + status + '</span></p>' +
+            '<h6>Task ID: ' + id + '</h6> </div>' +
+            '<h3>' + desc + '</h3>' +
+            '<p><span class="glyphicon glyphicon-folder-open"></span> ' + severity + ' ' +
+            '<span class="glyphicon glyphicon-user"></span> ' + assignedTo + '</p>' +
+            '<a href="#"  id="closebtn" class="btn btn-success"  onclick="setStatusClosed(\'' + id + '\')"><i class="far fa-check-circle"></i>&nbsp;Mark as Completed</a> ' +
+            '<a href="#" id="delbtn" class="btn btn-danger" onclick="deleteIssue(\'' + id + '\')"><i class="glyphicon glyphicon-trash"></i> Delete</a>' +
+            '</div>';
+    }
+}
+
+function saveIssue(e) {
+    var issueId = chance.guid();
+    var issueDesc = document.getElementById('issueDescInput').value;
+    var issueSeverity = document.getElementById('issueSeverityInput').value;
+    var issueAssignedTo = document.getElementById('issueAssignedToInput').value;
+    var issueStatus = 'Pending';
+    var issue = {
+        id: issueId,
+        description: issueDesc,
+        severity: issueSeverity,
+        assignedTo: issueAssignedTo,
+        status: issueStatus
+    }
+
+    var issues = JSON.parse(localStorage.getItem('issues')) || [];
+    issues.push(issue);
+    localStorage.setItem('issues', JSON.stringify(issues));
+
+    document.getElementById('issueInputForm').reset();
+    fetchIssues('all');
+    e.preventDefault();
+}
+
+function setStatusClosed(id) {
+    var issues = JSON.parse(localStorage.getItem('issues')) || [];
+
+    for (var i = 0; i < issues.length; i++) {
+        if (issues[i].id == id) {
+            issues[i].status = "Task Completed";
+        }
+    }
+
+    localStorage.setItem('issues', JSON.stringify(issues));
+    fetchIssues('all');
+}
+
+function deleteIssue(id) {
+    var issues = JSON.parse(localStorage.getItem('issues')) || [];
+
+    for (var i = 0; i < issues.length; i++) {
+        if (issues[i].id == id) {
+            issues.splice(i, 1);
+        }
+    }
+    localStorage.setItem('issues', JSON.stringify(issues));
+    fetchIssues('all');
+}
+
+// Add event listeners for filter buttons or dropdown
+document.getElementById('filterAll').addEventListener('click', function () {
+    fetchIssues('all');
+});
+
+document.getElementById('filterPending').addEventListener('click', function () {
+    fetchIssues('pending');
+});
+
+document.getElementById('filterCompleted').addEventListener('click', function () {
+    fetchIssues('completed');
+});
