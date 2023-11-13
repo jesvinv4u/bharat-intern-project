@@ -1,7 +1,5 @@
-// Sample data structure for posts
 let posts = [];
 
-// Function to display posts
 function displayPosts() {
     const postsSection = document.getElementById('posts');
     postsSection.innerHTML = '';
@@ -18,7 +16,6 @@ function displayPosts() {
     });
 }
 
-// Function to add a new post
 function addPost() {
     const titleInput = document.getElementById('postTitle');
     const contentInput = document.getElementById('postContent');
@@ -31,7 +28,6 @@ function addPost() {
         posts.push(newPost);
         displayPosts();
         
-        // Clear form inputs
         titleInput.value = '';
         contentInput.value = '';
     } else {
@@ -39,9 +35,7 @@ function addPost() {
     }
 }
 
-// Function to edit a post
 function editPost(index) {
-    // For simplicity, you can implement a prompt or use a form to edit the post.
     const newTitle = prompt('Enter new title:', posts[index].title);
     const newContent = prompt('Enter new content:', posts[index].content);
 
@@ -52,7 +46,6 @@ function editPost(index) {
     }
 }
 
-// Function to delete a post
 function deletePost(index) {
     const confirmDelete = confirm('Are you sure you want to delete this post?');
 
@@ -62,5 +55,4 @@ function deletePost(index) {
     }
 }
 
-// Initial display of posts
 displayPosts();
